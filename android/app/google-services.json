@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "922879540431",
+    "project_id": "mctq-quiz-hub",
+    "storage_bucket": "mctq-quiz-hub.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:922879540431:android:e6aada1e53086132b0cbba",
+        "android_client_info": {
+          "package_name": "com.example.quiz_hub"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBwBVAqZ5l3q5WluBbvz89hIk8UfW51na8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
