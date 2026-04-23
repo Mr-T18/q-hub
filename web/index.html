@@ -76,6 +76,7 @@
     window.addEventListener('load', function(ev) {
       // Flutterエンジンの読み込み
       _flutter.loader.load({
+        renderer: "html",
         onEntrypointLoaded: async function(engineInitializer) {
           try {
             const appRunner = await engineInitializer.initializeEngine();
