@@ -40,14 +40,15 @@
 
     // ★重要：Flutter 3.22以降の「正しい」カスタマイズ方法
     // flutter_bootstrap.js が読み込まれる前に設定を注入します
-    window.flutterConfiguration = {
-      renderer: "html", // HTMLレンダラーを強制して爆速化
-      onEntrypointLoaded: async function(engineInitializer) {
-        const appRunner = await engineInitializer.initializeEngine();
-        await appRunner.runApp();
-        // アプリの描画が始まったらスプラッシュを消す
-        window.hideSplash();
-      }
+    window.didCreateEngineInitializer = function(engineInitializer) {
+      engineInitializer.initializeEngine({
+        renderer: "html", // ここでHTMLレンダラーを強制
+      }).then(function(appRunner) {
+        appRunner.runApp().then(function() {
+          // アプリの描画が始まったらスプラッシュを消す
+          window.hideSplash();
+        });
+      });
     };
   </script>
 
