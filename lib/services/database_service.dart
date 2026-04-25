@@ -318,6 +318,7 @@ class DatabaseService {
     if (quizIds.isEmpty) return Stream.value([]);
     return _db
         .collection('questions')
+        .where("isPublic", isEqualTo: true)
         .where(FieldPath.documentId, whereIn: quizIds.take(30).toList())
         .snapshots()
         .map((s) => s.docs.map((d) => Quiz.fromFirestore(d)).toList());
@@ -357,6 +358,7 @@ class DatabaseService {
         .collection('users')
         .doc(uid)
         .collection('history')
+        .where("isPublic", isEqualTo: true)
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((s) => s.docs.map((d) => d.data()).toList());
@@ -367,7 +369,10 @@ class DatabaseService {
   // ==========================================
 
   Future<List<String>> getAllTags() async {
-    final snapshot = await _db.collection('questions').get();
+    final snapshot = await _db
+        .collection('questions')
+        .where("isPublic", isEqualTo: true)
+        .get();
     Set<String> allTags = {};
     for (var doc in snapshot.docs) {
       final data = doc.data();
@@ -510,16 +515,20 @@ class DatabaseService {
 
   // タイムライン用
   Stream<List<Quiz>> getTimelineQuizzes() {
-    return _db.collection('questions').snapshots().map((snap) {
-      final list = snap.docs.map((doc) => Quiz.fromFirestore(doc)).toList();
-      // アプリ側で新着順にソート（インデックスエラーを回避）
-      list.sort(
-        (a, b) => (b.createdAt ?? DateTime.now()).compareTo(
-          a.createdAt ?? DateTime.now(),
-        ),
-      );
-      return list;
-    });
+    return _db
+        .collection('questions')
+        .where("isPublic", isEqualTo: true)
+        .snapshots()
+        .map((snap) {
+          final list = snap.docs.map((doc) => Quiz.fromFirestore(doc)).toList();
+          // アプリ側で新着順にソート（インデックスエラーを回避）
+          list.sort(
+            (a, b) => (b.createdAt ?? DateTime.now()).compareTo(
+              a.createdAt ?? DateTime.now(),
+            ),
+          );
+          return list;
+        });
   }
 
   // マイページ用
@@ -550,7 +559,9 @@ class DatabaseService {
 
     if (mode == 'random') {
       // 1. クエリの初期化
-      Query query = _db.collection('questions');
+      Query query = _db
+          .collection('questions')
+          .where("isPublic", isEqualTo: true);
 
       // 2. 難易度が指定されていれば絞り込みを追加
       if (difficulty != null) {
@@ -592,7 +603,9 @@ class DatabaseService {
     Query query = _db.collection('questions');
     if (level != null) {
       // 難易度で絞り込む
-      query = query.where('difficulty', isEqualTo: level);
+      query = query
+          .where('difficulty', isEqualTo: level)
+          .where("questions", isEqualTo: true);
     }
     return query.snapshots().map(
       (snap) => snap.docs.map((doc) => Quiz.fromFirestore(doc)).toList(),

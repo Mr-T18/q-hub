@@ -3,11 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_options.dart';
 import 'core/theme.dart';
-import 'ui/screens/main_navigation.dart'; // 修正
+import 'ui/screens/main_navigation.dart';
+import 'firebase_options_dev.dart' as dev;
+import 'firebase_options_prod.dart' as prod;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  // ビルド時の引数 --dart-define=FLAVOR=prod を取得
+  const flavor = String.fromEnvironment('FLAVOR', defaultValue: 'dev');
+  await Firebase.initializeApp(
+    options: flavor == 'prod'
+        ? prod.DefaultFirebaseOptions.currentPlatform
+        : dev.DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const ProviderScope(child: SenQApp()));
 }
 
@@ -20,7 +28,7 @@ class SenQApp extends StatelessWidget {
       title: 'Q-HUB',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
-      home: const MainNavigation(), // ここを修正
+      home: const MainNavigation(),
     );
   }
 }

@@ -12,7 +12,12 @@
           "package_name": "com.example.quiz_hub"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "922879540431-hpvlq1t8ahn8vabscibuhg4t75j2usfv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBwBVAqZ5l3q5WluBbvz89hIk8UfW51na8"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "922879540431-hpvlq1t8ahn8vabscibuhg4t75j2usfv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "922879540431-k2ggpvqtai91l5ri2h41sr838pe2i96f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.quizHub"
+              }
+            }
+          ]
         }
       }
     }

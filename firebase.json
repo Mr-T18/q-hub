@@ -1,1 +1,39 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"mctq-quiz-hub","appId":"1:922879540431:android:e6aada1e53086132b0cbba","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"mctq-quiz-hub","configurations":{"android":"1:922879540431:android:e6aada1e53086132b0cbba","ios":"1:922879540431:ios:5117e89ffe168385b0cbba","macos":"1:922879540431:ios:5117e89ffe168385b0cbba","web":"1:922879540431:web:e09af24a58309649b0cbba","windows":"1:922879540431:web:95dc8592a297da22b0cbba"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "mctq-quiz-hub",
+          "appId": "1:922879540431:android:e6aada1e53086132b0cbba",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "mctq-quiz-hub",
+          "configurations": {
+            "android": "1:922879540431:android:e6aada1e53086132b0cbba",
+            "ios": "1:922879540431:ios:5117e89ffe168385b0cbba",
+            "macos": "1:922879540431:ios:5117e89ffe168385b0cbba",
+            "web": "1:922879540431:web:e09af24a58309649b0cbba",
+            "windows": "1:922879540431:web:95dc8592a297da22b0cbba"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

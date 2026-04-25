@@ -100,43 +100,54 @@ class _CreateQuizScreenState extends State<CreateQuizScreen> {
 
     setState(() => _isSaving = true);
     try {
-      final Map<String, dynamic> data = {
-        'qText': _qController.text.trim(),
-        'aText': _aController.text.trim(),
-        'explanation': _expController.text.trim(),
-        'tags': _selectedTags,
-        'difficulty': _difficulty.toInt(),
-        'isPublic': isPublic,
+      // 編集か新規かを判定
+      final isEditing = _currentEditingQuiz != null;
 
-        // --- 【修正箇所】作成者情報の保持ロジック ---
-        // 編集（_currentEditingQuizがある）なら元の作成者IDを使い、新規なら自分のIDを使う
-        'creatorId': _currentEditingQuiz?.creatorId ?? user.uid,
-        // 名前も同様に保持
-        'creatorName':
-            _currentEditingQuiz?.creatorName ?? (user.displayName ?? '詠み人知らず'),
+      if (isEditing) {
+        // --- 【編集の場合】 ---
+        // 既存の saveQuiz を呼び出す（カウントアップはしない）
+        final Map<String, dynamic> data = {
+          'qText': _qController.text.trim(),
+          'aText': _aController.text.trim(),
+          'explanation': _expController.text.trim(),
+          'tags': _selectedTags,
+          'difficulty': _difficulty.toInt(),
+          'isPublic': isPublic,
+          'creatorId': _currentEditingQuiz!.creatorId,
+          'creatorName': _currentEditingQuiz!.creatorName,
+          'updatedAt': FieldValue.serverTimestamp(),
+          'createdAt': _currentEditingQuiz!.createdAt,
+        };
 
-        'updatedAt': FieldValue.serverTimestamp(),
-        'createdAt':
-            _currentEditingQuiz?.createdAt ?? FieldValue.serverTimestamp(),
-      };
-
-      await DatabaseService().saveQuiz(
-        quizId: _currentEditingQuiz?.id,
-        data: data,
-      );
+        await DatabaseService().saveQuiz(
+          quizId: _currentEditingQuiz!.id,
+          data: data,
+        );
+      } else {
+        // --- 【新規投稿の場合】 ---
+        // 作成した addQuiz を呼び出す（ここで totalQuizCount が +1 される）
+        await DatabaseService().addQuiz(
+          qText: _qController.text.trim(),
+          aText: _aController.text.trim(),
+          explanation: _expController.text.trim(),
+          tags: _selectedTags,
+          difficulty: _difficulty.toInt(),
+          creatorId: user.uid,
+          creatorName: user.displayName ?? '詠み人知らず',
+          isPublic: isPublic,
+        );
+      }
 
       if (mounted) {
-        // 保存が終わったら確実にメイン画面へ戻る
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-            builder: (context) => const MainNavigation(),
-          ), // メイン画面のクラス名を確認してください
+          MaterialPageRoute(builder: (context) => const MainNavigation()),
           (route) => false,
         );
       }
     } catch (e) {
       debugPrint("Save Error: $e");
+      // 必要に応じてユーザーにエラー通知を表示
     } finally {
       if (mounted) setState(() => _isSaving = false);
     }

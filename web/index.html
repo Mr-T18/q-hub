@@ -2,52 +2,23 @@
 <html>
 <head>
   <base href="$FLUTTER_BASE_HREF">
-
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
   <meta name="description" content="Q-HUB - 高専生のためのクイズ共有ハブ">
-
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="Q-HUB">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <link rel="icon" type="image/png" href="favicon.png"/>
-
+  <meta name="mobile-web-app-capable" content="yes">
   <title>Q-HUB</title>
   <link rel="manifest" href="manifest.json">
 
   <style>
-    /* スプラッシュ画面のスタイル */
+    /* スプラッシュ画面のスタイル（変更なし） */
     #splash {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      background-color: #ffffff; /* ホワイト背景 */
-      z-index: 9999;
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background-color: #ffffff; z-index: 9999;
       transition: opacity 0.6s ease-out;
     }
-
-    #splash.fade-out {
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    .logo {
-      width: 100px;
-      height: 100px;
-    }
-
-    .title {
-      color: #1A237E; /* 専Qインディゴを文字色に */
-      font-family: "Hiragino Kaku Gothic ProN", "Meiryo", sans-serif;
-      font-size: 28px;
-      font-weight: bold;
-      letter-spacing: 0.15em;
-    }
+    #splash.fade-out { opacity: 0; pointer-events: none; }
+    .logo { width: 100px; height: 100px; }
   </style>
 </head>
 <body>
@@ -56,46 +27,36 @@
          onerror="this.src='assets/images/logo.png'; this.onerror=null;" alt="Logo">
   </div>
 
-  <script src="flutter_bootstrap.js" async></script>
-  
   <script>
-    // スプラッシュを消す関数（グローバルに定義してFlutter側からも呼べるようにする）
+    // スプラッシュを消す関数
     window.hideSplash = function() {
       const splash = document.getElementById('splash');
       if (splash && !splash.classList.contains('fade-out')) {
         console.log("Q-HUB: Hiding splash screen...");
         splash.classList.add('fade-out');
-        setTimeout(() => {
-          if (document.body.contains(splash)) {
-            splash.remove();
-          }
-        }, 650);
+        setTimeout(() => { if (document.body.contains(splash)) splash.remove(); }, 650);
       }
     };
 
-    window.addEventListener('load', function(ev) {
-      // Flutterエンジンの読み込み
-      _flutter.loader.load({
-        onEntrypointLoaded: async function(engineInitializer) {
-          try {
-            const appRunner = await engineInitializer.initializeEngine();
-            await appRunner.runApp();
-            
-            // アプリ起動に成功したら消す
-            window.hideSplash();
-          } catch (e) {
-            console.error("Q-HUB Error:", e);
-            // エラー時も固まらないように消す
-            window.hideSplash();
-          }
-        }
+    // ★重要：Flutter 3.22以降の「正しい」カスタマイズ方法
+    // flutter_bootstrap.js が読み込まれる前に設定を注入します
+    window.didCreateEngineInitializer = function(engineInitializer) {
+      engineInitializer.initializeEngine({
+        renderer: "html", // ここでHTMLレンダラーを強制
+      }).then(function(appRunner) {
+        appRunner.runApp().then(function() {
+          // アプリの描画が始まったらスプラッシュを消す
+          window.hideSplash();
+        });
       });
+    };
+  </script>
 
-      // 万が一のためのバックアップ（20秒経っても消えなければ強制削除）
-      setTimeout(() => {
-        window.hideSplash();
-      }, 20000);
-    });
+  <script src="flutter_bootstrap.js" async></script>
+
+  <script>
+    // バックアップ：15秒経っても消えなければ強制削除
+    setTimeout(() => window.hideSplash(), 15000);
   </script>
 </body>
 </html>

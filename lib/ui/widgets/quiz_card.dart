@@ -57,6 +57,7 @@ class _ExpandableQuizCardState extends State<ExpandableQuizCard> {
         final likeCount = data?['likeCount'] ?? 0;
         final isLiked = user != null && likedBy.contains(user.uid);
         final bool isMine = user?.uid == widget.quiz.creatorId;
+        final bool isPublic = data?["isPublic"] ?? true;
 
         return Card(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -148,6 +149,12 @@ class _ExpandableQuizCardState extends State<ExpandableQuizCard> {
                           return const SizedBox();
                         },
                       ),
+                      if (!isPublic) // もし非公開(false)なら表示
+                        const Icon(
+                          Icons.visibility_off,
+                          size: 18,
+                          color: Colors.grey, // 目立ちすぎず、でも「隠れている」感が出る色
+                        ),
                     ],
                   ),
                   const SizedBox(height: 12),
