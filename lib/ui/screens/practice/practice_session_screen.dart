@@ -217,7 +217,7 @@ class _PracticeSessionScreenState extends State<PracticeSessionScreen> {
                 elevation: 8,
               ),
               child: const Text(
-                'BUZZ',
+                '押せ！',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
